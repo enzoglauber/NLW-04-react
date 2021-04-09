@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import challenges from '../../challenges.json';
 
@@ -13,9 +13,9 @@ interface ChallengerContextData {
   levelUp: () => void,
   currentExperience: number,
   challengesCompleted: number,
-  starNewChallenge: () => void,
   resetChallenge: () => void,
   completeChallenge: () => void,
+  startNewChallenge: () => void,
   experienceToNextLevel: number,
   activeChallenge: Challenge
 }
@@ -32,15 +32,34 @@ export function ChallengerProvider({ children }: ChallengerProviderProps) {
   const [challengesCompleted, setChallengesCompleted] = useState(0);
   const [activeChallenge, setActiveChallenge] = useState(null);
 
+  useEffect(() => { // amount
+    Notification.requestPermission();
+  }, []);
+
   function levelUp() {
     setLevel(level + 1);
   }
 
-  function starNewChallenge() {
+  useEffect(() => {
+    // Cookies.set('level', String(level))
+    // Cookies.set('currentExperience', String(currentExperience))
+    // Cookies.set('challengesCompleted', String(challengesCompleted))
+  }, [level, currentExperience, challengesCompleted])
+
+  function startNewChallenge() {
     const randomChallengeIndex = Math.floor(Math.random() * challenges.length);
     const challenge = challenges[randomChallengeIndex];
 
-    setActiveChallenge(challenge);
+    setActiveChallenge(challenge as Challenge);
+
+    new Audio('/notification.mp3').play();
+
+    if (Notification.permission === 'granted') {
+      new Notification('Novo desafio 🎉', {
+        body: `Valendo ${challenge.amount} de xp!`,
+        silent: false,
+      });
+    }
   }
 
   function resetChallenge() {
@@ -77,7 +96,7 @@ export function ChallengerProvider({ children }: ChallengerProviderProps) {
       experienceToNextLevel,
       activeChallenge,
       completeChallenge,
-      starNewChallenge,
+      startNewChallenge,
       resetChallenge,
     }}>
       {children}
