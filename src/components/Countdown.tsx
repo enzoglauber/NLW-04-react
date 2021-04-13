@@ -1,17 +1,9 @@
 import cx from 'classnames';
-import { useContext, useEffect, useState } from 'react';
-import { ChallengesContext } from '../contexts/ChallengesContext';
-import { CountdownContext } from '../contexts/CountdownContext';
 
+import { useCountdown } from '../contexts/CountdownContext';
 import styles from '../styles/components/Countdown.module.css';
 
-// import { useChallenges } from "../hooks/useChallenges";
-// import { useCountdown } from "../hooks/useCountdown";
-
-let countdownTimeout: NodeJS.Timeout;
-
 export function Countdown() {
-
   const {
     isActive,
     hasFinished,
@@ -19,7 +11,7 @@ export function Countdown() {
     startCountdown,
     minutes,
     seconds
-  } = useContext(CountdownContext);
+  } = useCountdown();
 
   const [minuteLeft, minuteRight] = String(minutes).padStart(2, '0').split('');
   const [secondLeft, secondRight] = String(seconds).padStart(2, '0').split('');

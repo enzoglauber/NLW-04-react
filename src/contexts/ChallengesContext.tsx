@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 import challenges from '../../challenges.json';
 import { LevelUpModal } from '../components/LevelUpModal';
@@ -30,7 +30,8 @@ interface ChallengesProviderProps {
   challengesCompleted: number;
 }
 
-export const ChallengesContext = createContext({} as ChallengesContextData);
+const ChallengesContext = createContext({} as ChallengesContextData);
+export const useChallenges = () => useContext(ChallengesContext)
 
 export function ChallengesProvider({ children, ...rest }: ChallengesProviderProps) {
   const [level, setLevel] = useState(rest.level ?? 1)
